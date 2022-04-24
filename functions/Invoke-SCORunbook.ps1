@@ -24,7 +24,7 @@ function Invoke-SCORunbook {
     }
     
     process {
-        $uri = '{0}/Jobs' -f $WebServiceUri
+        $uri = '{0}/api/Jobs' -f $WebServiceUri
         Write-PSFMessage -Level Verbose -Message "Invoking Runbook at: $uri"
         
         [array] $ParametersArray = foreach ($item in $parameters.GetEnumerator()) { @{Name = $item.Key; Value = $item.value } }
@@ -36,16 +36,14 @@ function Invoke-SCORunbook {
             CreatedBy      = $null
         } | ConvertTo-Json
 
-        $invokeRestMethodParams = @{
+        $invokeRestMethodParams = Get-SCORestMethodParams -Uri $uri
+
+        $invokeRestMethodParams += @{
             Method      = 'POST'
             ContentType = 'application/json'
-            Uri         = $uri
             Body        = $invokeRestMethodBody
         }
-        if ($Script:UseDefaultCredentials) {
-            $invokeRestMethodParams['UseDefaultCredentials'] = $true
-            $invokeRestMethodParams['AllowUnencryptedAuthentication'] = $true
-        }
+
         Write-PSFMessage -Level Verbose -Message "Invoking Rest Method with parameters: `r`n $($invokeRestMethodParams | out-string)"
 
         $invokeRunbook = (Invoke-RestMethod @invokeRestMethodParams)

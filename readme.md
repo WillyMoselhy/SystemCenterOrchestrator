@@ -8,6 +8,12 @@ Install-Module -Name SystemCenterOrchestrator
 ```
 
 ## Usage Examples
+- Connect to Orchestrator Web Service API
+```PowerShell
+$creds = Get-Credential
+Connect-SCOWebServiceAPI -Uri https://sco.contoso.com:81 -Credential $creds
+```
+> If you do not use `Connect-SCOWebServiceAPI` all cmdlets will default to http://localhost:81 and current logged in account.
 - Get all runbooks, including parameters and returned data
 ```PowerShell
 Get-SCORunbook
@@ -21,7 +27,7 @@ $Paramters = @{
 Invoke-Runbook -RunbookId d7eab1cc-86b9-4bce-9b69-4bc6f12a9453 -Parameters $Parameters
 ```
 
-## Requirements 
+## Requirements
 - PowerShell 7.x
 ## Known Issues
 - The module needs to run on the same server as the Web Service server and is configured for port 81. This will be fixed in an upcoming release.

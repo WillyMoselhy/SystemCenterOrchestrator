@@ -27,7 +27,7 @@ function Get-SCORunbook {
     }
     
     process {
-        $uri = '{0}/Runbooks' -f $WebServiceUri
+        $uri = '{0}/api/Runbooks' -f $WebServiceUri
         Write-PSFMessage -Level Verbose -Message "Querying Runbooks at: $uri"
         
         if ($Name) {
@@ -39,15 +39,9 @@ function Get-SCORunbook {
             Write-PSFMessage -Level Verbose -Message "Filtering by Id: $uri"
         }
 
-        $invokeRestMethodParams = @{
-            Uri = $uri
-        }
-        if ($Script:UseDefaultCredentials) {
-            $invokeRestMethodParams['UseDefaultCredentials'] = $true
-            $invokeRestMethodParams['AllowUnencryptedAuthentication'] = $true
-        }
-        Write-PSFMessage -Level Verbose -Message "Invoking Rest Method with parameters: `r`n $($invokeRestMethodParams | out-string)"
+        $invokeRestMethodParams = Get-SCORestMethodParams -Uri $uri
 
+        
         $runbooks = (Invoke-RestMethod @invokeRestMethodParams).value
         
         # Get parameters of each runbook
